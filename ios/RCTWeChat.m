@@ -37,6 +37,11 @@ RCT_EXPORT_MODULE()
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return YES;
+}
+
 - (BOOL)handleOpenURL:(NSNotification *)aNotification
 {
     NSString * aURLString =  [aNotification userInfo][@"url"];
@@ -248,7 +253,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
                 } else {
                     WXImageObject *imageObject = [WXImageObject object];
                     imageObject.imageData = UIImagePNGRepresentation(image);
-                    
+
                     [self shareToWeixinWithMediaMessage:aScene
                                                   Title:title
                                             Description:description
@@ -258,7 +263,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
                                              ThumbImage:aThumbImage
                                                MediaTag:mediaTagName
                                                callBack:callback];
-                    
+
                 }
             }];
         } else if ([type isEqualToString:RCTWXShareTypeFile]) {
@@ -280,7 +285,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
                                        callBack:callback];
 
         } else if ([type isEqualToString:RCTWXShareTypeMini]) {
-            
+
             WXMiniProgramObject *miniObject = [WXMiniProgramObject object];
             miniObject.webpageUrl = aData[@"webpageUrl"];
             miniObject.userName = aData[@"userName"];
@@ -288,7 +293,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
             miniObject.withShareTicket = [aData[@"withShareTicket"] boolValue];
             miniObject.miniProgramType = [aData[@"miniProgramType"] integerValue];
             miniObject.hdImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:aData[@"hdImageData"]]] ;
-            
+
             [self shareToWeixinWithMediaMessage:aScene
                                           Title:title
                                     Description:description
@@ -298,7 +303,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
                                      ThumbImage:aThumbImage
                                        MediaTag:mediaTagName
                                        callBack:callback];
-            
+
         } else {
             callback(@[@"message type unsupported"]);
         }
@@ -375,7 +380,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
 	if([resp isKindOfClass:[SendMessageToWXResp class]])
 	{
 	    SendMessageToWXResp *r = (SendMessageToWXResp *)resp;
-    
+
 	    NSMutableDictionary *body = @{@"errCode":@(r.errCode)}.mutableCopy;
 	    body[@"errStr"] = r.errStr;
 	    body[@"lang"] = r.lang;
@@ -390,7 +395,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
 	    body[@"lang"] = r.lang;
 	    body[@"country"] =r.country;
 	    body[@"type"] = @"SendAuth.Resp";
-    
+
 	    if (resp.errCode == WXSuccess)
 	    {
 	        [body addEntriesFromDictionary:@{@"appid":self.appId, @"code" :r.code}];
